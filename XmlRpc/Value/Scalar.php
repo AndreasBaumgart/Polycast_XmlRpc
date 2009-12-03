@@ -45,14 +45,6 @@ abstract class Polycast_XmlRpc_Value_Scalar extends Polycast_XmlRpc_Value
     public function saveXML()
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
-//            $dom   = new DOMDocument('1.0');
-//            $value = $dom->appendChild($dom->createElement('value'));
-//            $type  = $value->appendChild($dom->createElement($this->_type));
-//            $type->appendChild($dom->createTextNode($this->getValue()));
-//
-//            $this->_as_dom = $value;
-//            $this->_as_xml = $this->_stripXmlDeclaration($dom);
-            
             $val = $this->_escapeXmlEntities($this->getValue());
             $this->_as_xml = '<value><' . $this->_type . '>' . $val 
                 . '</' . $this->_type . '></value>';

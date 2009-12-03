@@ -56,22 +56,6 @@ class Polycast_XmlRpc_Value_Struct extends Polycast_XmlRpc_Value_Collection
     public function saveXML()
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
-//            $dom    = new DOMDocument('1.0');
-//            $value  = $dom->appendChild($dom->createElement('value'));
-//            $struct = $value->appendChild($dom->createElement('struct'));
-//
-//            if (is_array($this->_value)) {
-//                foreach ($this->_value as $name => $val) {
-//                    /* @var $val Polycast_XmlRpc_Value */
-//                    $member = $struct->appendChild($dom->createElement('member'));
-//                    $member->appendChild($dom->createElement('name', $this->_escapeXmlEntities($name)));
-//                    $member->appendChild($dom->importNode($val->getAsDOM(), 1));
-//                }
-//            }
-//
-//            $this->_as_dom = $value;
-//            $this->_as_xml = $this->_stripXmlDeclaration($dom);
-            
             $membersXml = '';
             if (is_array($this->_value)) {
                 foreach ($this->_value as $name => $val) {
