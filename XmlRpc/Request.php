@@ -406,24 +406,28 @@ class Polycast_XmlRpc_Request
         $args   = $this->_getXmlRpcParams();
         $method = $this->getMethod();
 
-        $dom = new DOMDocument('1.0', $this->getEncoding());
-        $mCall = $dom->appendChild($dom->createElement('methodCall'));
-        $mName = $mCall->appendChild($dom->createElement('methodName', $method));
-
+        $xml = new XmlWriter();
+        $xml->openMemory();
+        $xml->startDocument('1.0', $this->getEncoding());
+        $xml->startElement('methodCall');
+        $xml->startElement('methodName');
+        $xml->text($method);
+        $xml->endElement(); // methodName
+        
         if (is_array($args) && count($args)) {
-            $params = $mCall->appendChild($dom->createElement('params'));
+            $xml->startElement('params');
 
             foreach ($args as $arg) {
                 /* @var $arg Polycast_XmlRpc_Value */
-                $argDOM = new DOMDocument('1.0', $this->getEncoding());
-                $argDOM->loadXML($arg->saveXML());
-
-                $param = $params->appendChild($dom->createElement('param'));
-                $param->appendChild($dom->importNode($argDOM->documentElement, 1));
+                $xml->startElement('param');
+                $xml->writeRaw($arg->saveXML());
+                $xml->endElement(); // param    
             }
+            $xml->endElement(); // params
         }
-
-        return $dom->saveXML();
+        $xml->endElement(); // methodCall
+        
+        return $xml->flush();
     }
 
     /**

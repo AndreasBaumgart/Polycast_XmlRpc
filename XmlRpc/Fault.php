@@ -283,17 +283,18 @@ class Polycast_XmlRpc_Fault
             'faultCode'   => $this->getCode(),
             'faultString' => $this->getMessage()
         );
-        $value = Polycast_XmlRpc_Value::getXmlRpcValue($faultStruct);
-        $valueDOM = new DOMDocument('1.0', $this->getEncoding());
-        $valueDOM->loadXML($value->saveXML());
+        
+        $value = Polycast_XmlRpc_Value::getXmlRpcValue($faultStruct)->saveXML();
 
-        // Build response XML
-        $dom  = new DOMDocument('1.0', $this->getEncoding());
-        $r    = $dom->appendChild($dom->createElement('methodResponse'));
-        $f    = $r->appendChild($dom->createElement('fault'));
-        $f->appendChild($dom->importNode($valueDOM->documentElement, 1));
-
-        return $dom->saveXML();
+        $xml = new XmlWriter();
+        $xml->openMemory();
+        $xml->startDocument('1.0', $this->getEncoding());
+        $xml->startElement('methodResponse');
+        $xml->startElement('fault');
+        $xml->writeRaw($value);
+        $xml->endElement(); // fault
+        $xml->endElement(); // methodResponse
+        return $xml->flush();
     }
 
     /**

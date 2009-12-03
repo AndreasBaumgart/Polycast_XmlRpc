@@ -119,7 +119,7 @@ abstract class Polycast_XmlRpc_Value
     public function getAsDOM()
     {
         if (!$this->_as_dom) {
-            $doc = new DOMDocument('1.0');
+            $doc = new DOMDocument('1.0', 'UTF-8');
             $doc->loadXML($this->saveXML());
             $this->_as_dom = $doc->documentElement;
         }
@@ -127,9 +127,9 @@ abstract class Polycast_XmlRpc_Value
         return $this->_as_dom;
     }
 
-    protected function _stripXmlDeclaration(DOMDocument $dom)
+    protected function _stripXmlDeclaration($xml)
     {
-        return preg_replace('/<\?xml version="1.0"( encoding="[^\"]*")?\?>\n/u', '', $dom->saveXML());
+        return preg_replace('/<\?xml version="1.0"( encoding="[^\"]*")?\?>\n/u', '', $xml);
     }
 
     /**

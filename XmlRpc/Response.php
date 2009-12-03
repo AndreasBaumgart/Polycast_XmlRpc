@@ -223,23 +223,17 @@ class Polycast_XmlRpc_Response
      */
     public function saveXML()
     {
-//        $value = $this->_getXmlRpcReturn();
-//        $valueDOM = new DOMDocument('1.0', $this->getEncoding());
-//        $valueDOM->loadXML($value->saveXML());
-//
-//        $dom      = new DOMDocument('1.0', $this->getEncoding());
-//        $response = $dom->appendChild($dom->createElement('methodResponse'));
-//        $params   = $response->appendChild($dom->createElement('params'));
-//        $param    = $params->appendChild($dom->createElement('param'));
-//
-//        $param->appendChild($dom->importNode($valueDOM->documentElement, true));
-//
-//        return $dom->saveXML();
-        
-        $value = $this->_getXmlRpcReturn();
-        return '<?xml version="1.0" encoding="' . $this->getEncoding() . '"?>'
-            . '<methodResponse><params><param>' . $value->saveXML() . '</param>'
-            . '</params></methodResponse>';
+        $xml = new XmlWriter();
+        $xml->openMemory();
+        $xml->startDocument('1.0', $this->getEncoding());
+        $xml->startElement('methodResponse');
+        $xml->startElement('params');
+        $xml->startElement('param');
+        $xml->writeRaw($this->_getXmlRpcReturn()->saveXML());
+        $xml->endElement(); // param
+        $xml->endElement(); // params
+        $xml->endElement(); // methodResponse
+        return $xml->flush();
     }
 
     /**

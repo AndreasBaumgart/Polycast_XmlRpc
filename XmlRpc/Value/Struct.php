@@ -47,7 +47,6 @@ class Polycast_XmlRpc_Value_Struct extends Polycast_XmlRpc_Value_Collection
         parent::__construct($value);
     }
 
-
     /**
      * Return the XML code that represent struct native MXL-RPC value
      *
@@ -56,18 +55,27 @@ class Polycast_XmlRpc_Value_Struct extends Polycast_XmlRpc_Value_Collection
     public function saveXML()
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
-            $membersXml = '';
+            
+            $xml = new XmlWriter();
+            $xml->openMemory();
+            $xml->startDocument('1.0', 'UTF-8');
+            $xml->startElement('value');
+            $xml->startElement('struct');
+            
             if (is_array($this->_value)) {
                 foreach ($this->_value as $name => $val) {
                     /* @var $val Polycast_XmlRpc_Value */
-                    $membersXml .= '<member><name>' 
-                        . $this->_escapeXmlEntities($name) . '</name>' 
-                        . $val->saveXML() . '</member>';
+                    $xml->startElement('member');
+                    $xml->startElement('name');
+                    $xml->text($name);
+                    $xml->endElement(); // name
+                    $xml->writeRaw($val->saveXML());
+                    $xml->endElement(); // member
                 }
             }
-            $this->_as_xml .= '<value><struct>' . $membersXml 
-                . '</struct></value>';
-
+            $xml->endElement(); // struct
+            $xml->endElement(); // value
+            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
         }
 
         return $this->_as_xml;
