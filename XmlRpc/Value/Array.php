@@ -64,7 +64,7 @@ class Polycast_XmlRpc_Value_Array extends Polycast_XmlRpc_Value_Collection
                     new Polycast_XmlRpc_Generator_Element('data', $members)
                 ))
             ));
-            $this->_as_xml = $generator->generateXml($element);
+            $this->_as_xml = $this->_stripXmlDeclaration($generator->generateXml($element));
         }
 
         return $this->_as_xml;

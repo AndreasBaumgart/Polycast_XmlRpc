@@ -405,29 +405,21 @@ class Polycast_XmlRpc_Request
     {
         $args   = $this->_getXmlRpcParams();
         $method = $this->getMethod();
-
-        $xml = new XmlWriter();
-        $xml->openMemory();
-        $xml->startDocument('1.0', $this->getEncoding());
-        $xml->startElement('methodCall');
-        $xml->startElement('methodName');
-        $xml->text($method);
-        $xml->endElement(); // methodName
+        $generator = Polycast_XmlRpc_Value::getGenerator();
         
-        if (is_array($args) && count($args)) {
-            $xml->startElement('params');
+        $element = new Polycast_XmlRpc_Generator_Element('methodCall', array(
+            new Polycast_XmlRpc_Generator_Element('methodName', array($method))
+        ));
 
+        if (is_array($args) && count($args)) {
+            $params = new Polycast_XmlRpc_Generator_Element('params');
+            $element->appendChild($params);
             foreach ($args as $arg) {
                 /* @var $arg Polycast_XmlRpc_Value */
-                $xml->startElement('param');
-                $xml->writeRaw($arg->saveXML());
-                $xml->endElement(); // param    
+                $params->appendChild(new Polycast_XmlRpc_Generator_Element('param', array($arg)));
             }
-            $xml->endElement(); // params
         }
-        $xml->endElement(); // methodCall
-        
-        return $xml->flush();
+        return $generator->generateXml($element);
     }
 
     /**

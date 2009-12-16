@@ -41,14 +41,15 @@ class Polycast_XmlRpc_Generator_DomDocument extends Polycast_XmlRpc_Generator_Ab
     {
         $dom   = new DOMDocument('1.0');
         $this->_generateXml($dom, $element);
-        return $this->_stripXmlDeclaration($dom->saveXML());
+        return $dom->saveXML();
     }
 
     /**
      * Builds the document recursively.
      * 
-     * @param XMLWriter $writer
+     * @param DOMDocument $dom
      * @param Polycast_XmlRpc_Generator_Element $element
+     * @param DOMElement $rootNode
      * @return void
      */
     protected function _generateXml(DOMDocument $dom, 

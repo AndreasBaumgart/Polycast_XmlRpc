@@ -223,17 +223,15 @@ class Polycast_XmlRpc_Response
      */
     public function saveXML()
     {
-        $xml = new XmlWriter();
-        $xml->openMemory();
-        $xml->startDocument('1.0', $this->getEncoding());
-        $xml->startElement('methodResponse');
-        $xml->startElement('params');
-        $xml->startElement('param');
-        $xml->writeRaw($this->_getXmlRpcReturn()->saveXML());
-        $xml->endElement(); // param
-        $xml->endElement(); // params
-        $xml->endElement(); // methodResponse
-        return $xml->flush();
+        $generator = Polycast_XmlRpc_Value::getGenerator();
+        $element = new Polycast_XmlRpc_Generator_Element('methodResponse', array(
+            new Polycast_XmlRpc_Generator_Element('params', array(
+                new Polycast_XmlRpc_Generator_Element('param', array(
+                    $this->_getXmlRpcReturn()
+                ))
+            ))
+        ));
+        return $generator->generateXml($element);
     }
 
     /**

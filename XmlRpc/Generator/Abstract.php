@@ -21,6 +21,16 @@
  */  
 
 /**
+ * @var Polycast_XmlRpc_Generator_Element
+ */
+require_once 'Polycast/XmlRpc/Generator/Element.php';
+
+/**
+ * @var Polycast_XmlRpc_Value
+ */
+require_once 'Polycast/XmlRpc/Value.php';
+
+/**
  * Abstract XML generator adapter.
  */
 abstract class Polycast_XmlRpc_Generator_Abstract
@@ -58,14 +68,4 @@ abstract class Polycast_XmlRpc_Generator_Abstract
      * @return string
      */
     abstract public function generateXml(Polycast_XmlRpc_Generator_Element $data);
-    
-    /**
-     * Remove the leading XML declaration from XML data.
-     * @param string $xml
-     * @return string
-     */
-    protected static function _stripXmlDeclaration($xml)
-    {
-        return preg_replace('/<\?xml version="1.0"( encoding="[^\"]*")?\?>\n/u', '', $xml);
-    }
 }

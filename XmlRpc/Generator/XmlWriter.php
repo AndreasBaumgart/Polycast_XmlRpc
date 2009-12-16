@@ -44,7 +44,7 @@ class Polycast_XmlRpc_Generator_XmlWriter extends Polycast_XmlRpc_Generator_Abst
         $writer->startDocument('1.0', $this->getEncoding());
 
         $this->_generateXml($writer, $element);
-        return $this->_stripXmlDeclaration($writer->flush());    
+        return $writer->flush();    
     }
 
     /**

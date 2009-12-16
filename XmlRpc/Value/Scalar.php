@@ -51,18 +51,7 @@ abstract class Polycast_XmlRpc_Value_Scalar extends Polycast_XmlRpc_Value
                     )
                 ))
             );
-            $this->_as_xml = $generator->generateXml($element);
-            
-            
-//            $xml = new XmlWriter();
-//            $xml->openMemory();
-//            $xml->startDocument('1.0', 'UTF-8');
-//            $xml->startElement('value');
-//            $xml->startElement($this->_type);
-//            $xml->text($this->getValue());
-//            $xml->endElement(); // type
-//            $xml->endElement(); // value
-//            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
+            $this->_as_xml = $this->_stripXmlDeclaration($generator->generateXml($element));
         }
 
         return $this->_as_xml;

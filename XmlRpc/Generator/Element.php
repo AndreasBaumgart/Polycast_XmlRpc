@@ -67,4 +67,15 @@ class Polycast_XmlRpc_Generator_Element
     {
         return $this->_children;
     }
+    
+    /**
+     * Append a child.
+     * @param string | Polycast_XmlRpc_Generator_Element | Polycast_XmlRpc_Value $child
+     * @return Polycast_XmlRpc_Generator_Element Fluent interface
+     */
+    public function appendChild($child)
+    {
+        $this->_children[] = $child;
+        return $this;
+    }
 }

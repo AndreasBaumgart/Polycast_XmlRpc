@@ -76,7 +76,7 @@ class Polycast_XmlRpc_Value_Boolean extends Polycast_XmlRpc_Value_Scalar
                     )
                 ))
             );
-            $this->_as_xml = $generator->generateXml($element);
+            $this->_as_xml = $this->_stripXmlDeclaration($generator->generateXml($element));
         }
 
         return $this->_as_xml;

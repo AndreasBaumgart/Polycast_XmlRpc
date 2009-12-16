@@ -58,28 +58,25 @@ class Polycast_XmlRpc_Value_Struct extends Polycast_XmlRpc_Value_Collection
             
             $generator = $this->getGenerator();
             
+            // assemble envelope
+            $element = new Polycast_XmlRpc_Generator_Element('value', array(
+                $struct = new Polycast_XmlRpc_Generator_Element('struct')
+            ));
+            
             // assemble members
-            // <member><name>...</name><value>...</value></member>
-            $members = array();
             if (is_array($this->_value)) {
                 foreach ($this->_value as $name => $val) {
                     /* @var $val Polycast_XmlRpc_Value */
-                    $members[] = new Polycast_XmlRpc_Generator_Element('member', 
+                    $struct->appendChild(new Polycast_XmlRpc_Generator_Element('member', 
                         array(
                             new Polycast_XmlRpc_Generator_Element('name', array($name)),
                             $val
                         )
-                    );
+                    ));
                 }
             }
             
-            // assemble envelope
-            // <value><struct>...</struct></value>
-            $element = new Polycast_XmlRpc_Generator_Element('value', array(
-                new Polycast_XmlRpc_Generator_Element('struct', $members)
-            ));
-            
-            $this->_as_xml = $generator->generateXml($element);
+            $this->_as_xml = $this->_stripXmlDeclaration($generator->generateXml($element));
         }
 
         return $this->_as_xml;
