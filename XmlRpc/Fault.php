@@ -278,23 +278,18 @@ class Polycast_XmlRpc_Fault
      */
     public function saveXML()
     {
-        // Create fault value
-        $faultStruct = array(
-            'faultCode'   => $this->getCode(),
-            'faultString' => $this->getMessage()
-        );
-        
-        $value = Polycast_XmlRpc_Value::getXmlRpcValue($faultStruct)->saveXML();
-
-        $xml = new XmlWriter();
-        $xml->openMemory();
-        $xml->startDocument('1.0', $this->getEncoding());
-        $xml->startElement('methodResponse');
-        $xml->startElement('fault');
-        $xml->writeRaw($value);
-        $xml->endElement(); // fault
-        $xml->endElement(); // methodResponse
-        return $xml->flush();
+        $generator = Polycast_XmlRpc_Value::getGenerator();
+        $element = new Polycast_XmlRpc_Generator_Element('methodResponse', array(
+            new Polycast_XmlRpc_Generator_Element('fault', array(
+                new Polycast_XmlRpc_Generator_Element('faultCode', array(
+                    $this->getCode()
+                )),
+                new Polycast_XmlRpc_Generator_Element('faultString', array(
+                    $this->getMessage()
+                ))
+            ))
+        ));
+        return $generator->generateXml($element);
     }
 
     /**
