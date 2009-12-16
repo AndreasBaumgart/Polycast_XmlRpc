@@ -37,6 +37,12 @@
 abstract class Polycast_XmlRpc_Value
 {
     /**
+     * XML generator.
+     * @var Polycast_XmlRpc_Generator_Abstract
+     */
+    protected static $_generator = null;
+    
+    /**
      * The native XML-RPC representation of this object's value
      *
      * If the native type of this object is array or struct, this will be an array
@@ -399,5 +405,35 @@ abstract class Polycast_XmlRpc_Value
     protected function _decodeXmlEntities($str)
     {
         return html_entity_decode($str, ENT_QUOTES, 'UTF-8');
+    }
+    
+    /**
+     * Sets XML generator instance
+     *
+     * @param Polycast_XmlRpc_Generator_Abstract $generator
+     * @return void
+     */
+    public static function setGenerator(Polycast_XmlRpc_Generator_Abstract $generator)
+    {
+        self::$_generator = $generator;
+    }
+    
+    /**
+     * Get XML generator instance
+     *
+     * @return Polycast_XmlRpc_Generator_Abstract
+     */
+    public static function getGenerator()
+    {
+        if (!self::$_generator) {
+            if (extension_loaded('xmlwriter')) {
+                require_once 'Polycast/XmlRpc/Generator/XmlWriter.php';
+                self::$_generator = new Polycast_XmlRpc_Generator_XmlWriter();
+            } else {
+                require_once 'Polycast/XmlRpc/Generator/DomDocument.php';
+                self::$_generator = new Polycast_XmlRpc_Generator_DomDocument();
+            }
+        }
+        return self::$_generator;
     }
 }

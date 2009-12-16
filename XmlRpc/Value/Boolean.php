@@ -69,16 +69,14 @@ class Polycast_XmlRpc_Value_Boolean extends Polycast_XmlRpc_Value_Scalar
     public function saveXML()
     {
         if (! $this->_as_xml) {   // The XML was not generated yet
-            
-            $xml = new XmlWriter();
-            $xml->openMemory();
-            $xml->startDocument('1.0', 'UTF-8');
-            $xml->startElement('value');
-            $xml->startElement($this->_type);
-            $xml->text($this->_value);
-            $xml->endElement(); // type
-            $xml->endElement(); // value
-            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
+            $generator = $this->getGenerator();
+            $element = new Polycast_XmlRpc_Generator_Element('value', array(
+                    new Polycast_XmlRpc_Generator_Element($this->_type, array(
+                        $this->_value
+                    )
+                ))
+            );
+            $this->_as_xml = $generator->generateXml($element);
         }
 
         return $this->_as_xml;

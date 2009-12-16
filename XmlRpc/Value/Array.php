@@ -56,24 +56,15 @@ class Polycast_XmlRpc_Value_Array extends Polycast_XmlRpc_Value_Collection
     public function saveXML()
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
+            $generator = $this->getGenerator();
+            $members = is_array($this->_value) ? $this->_value : array();
             
-            $xml = new XmlWriter();
-            $xml->openMemory();
-            $xml->startDocument('1.0', 'UTF-8');
-            $xml->startElement('value');
-            $xml->startElement('array');
-            $xml->startElement('data');
-            
-            if (is_array($this->_value)) {
-                foreach ($this->_value as $name => $val) {
-                    /* @var $val Polycast_XmlRpc_Value */
-                    $xml->writeRaw($val->saveXML());
-                }
-            }
-            $xml->endElement(); // data
-            $xml->endElement(); // array
-            $xml->endElement(); // value
-            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
+            $element = new Polycast_XmlRpc_Generator_Element('value', array(
+                new Polycast_XmlRpc_Generator_Element('array', array(
+                    new Polycast_XmlRpc_Generator_Element('data', $members)
+                ))
+            ));
+            $this->_as_xml = $generator->generateXml($element);
         }
 
         return $this->_as_xml;

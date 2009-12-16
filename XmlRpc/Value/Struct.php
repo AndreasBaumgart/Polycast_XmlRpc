@@ -56,26 +56,30 @@ class Polycast_XmlRpc_Value_Struct extends Polycast_XmlRpc_Value_Collection
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
             
-            $xml = new XmlWriter();
-            $xml->openMemory();
-            $xml->startDocument('1.0', 'UTF-8');
-            $xml->startElement('value');
-            $xml->startElement('struct');
+            $generator = $this->getGenerator();
             
+            // assemble members
+            // <member><name>...</name><value>...</value></member>
+            $members = array();
             if (is_array($this->_value)) {
                 foreach ($this->_value as $name => $val) {
                     /* @var $val Polycast_XmlRpc_Value */
-                    $xml->startElement('member');
-                    $xml->startElement('name');
-                    $xml->text($name);
-                    $xml->endElement(); // name
-                    $xml->writeRaw($val->saveXML());
-                    $xml->endElement(); // member
+                    $members[] = new Polycast_XmlRpc_Generator_Element('member', 
+                        array(
+                            new Polycast_XmlRpc_Generator_Element('name', array($name)),
+                            $val
+                        )
+                    );
                 }
             }
-            $xml->endElement(); // struct
-            $xml->endElement(); // value
-            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
+            
+            // assemble envelope
+            // <value><struct>...</struct></value>
+            $element = new Polycast_XmlRpc_Generator_Element('value', array(
+                new Polycast_XmlRpc_Generator_Element('struct', $members)
+            ));
+            
+            $this->_as_xml = $generator->generateXml($element);
         }
 
         return $this->_as_xml;

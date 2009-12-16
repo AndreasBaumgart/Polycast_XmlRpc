@@ -36,7 +36,6 @@ require_once 'Polycast/XmlRpc/Value.php';
  */
 abstract class Polycast_XmlRpc_Value_Scalar extends Polycast_XmlRpc_Value
 {
-
     /**
      * Return the XML code that represent a scalar native MXL-RPC value
      *
@@ -45,16 +44,25 @@ abstract class Polycast_XmlRpc_Value_Scalar extends Polycast_XmlRpc_Value
     public function saveXML()
     {
         if (!$this->_as_xml) {   // The XML code was not calculated yet
+            $generator = $this->getGenerator();
+            $element = new Polycast_XmlRpc_Generator_Element('value', array(
+                    new Polycast_XmlRpc_Generator_Element($this->_type, array(
+                        $this->getValue()
+                    )
+                ))
+            );
+            $this->_as_xml = $generator->generateXml($element);
             
-            $xml = new XmlWriter();
-            $xml->openMemory();
-            $xml->startDocument('1.0', 'UTF-8');
-            $xml->startElement('value');
-            $xml->startElement($this->_type);
-            $xml->text($this->getValue());
-            $xml->endElement(); // type
-            $xml->endElement(); // value
-            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
+            
+//            $xml = new XmlWriter();
+//            $xml->openMemory();
+//            $xml->startDocument('1.0', 'UTF-8');
+//            $xml->startElement('value');
+//            $xml->startElement($this->_type);
+//            $xml->text($this->getValue());
+//            $xml->endElement(); // type
+//            $xml->endElement(); // value
+//            $this->_as_xml = $this->_stripXmlDeclaration($xml->flush());
         }
 
         return $this->_as_xml;
